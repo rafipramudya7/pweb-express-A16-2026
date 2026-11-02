@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLBB Shop — Kelompok A16</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="shop-title">
+      <span class="shield">🛡️</span>
+      <span class="text">SHOP</span>
+    </div>
+
+    <div class="player-box" title="Pilih player (endpoint bagian B)">
+      <label for="player-select">👤</label>
+      <select id="player-select" disabled>
+        <option>Memuat player…</option>
+      </select>
+    </div>
+
+    <div class="currencies">
+      <div class="pill gold"><span class="ic">🪙</span><span id="cur-bp">—</span><small>BP</small></div>
+      <div class="pill teal"><span class="ic">🎫</span><span id="cur-ticket">—</span><small>Ticket</small></div>
+      <div class="pill blue"><span class="ic">💎</span><span id="cur-diamond">—</span><small>Diamond</small></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Kategori">
+      <button class="side-btn active"><span>🦸</span><small>Heroes</small></button>
+      <button class="side-btn"><span>👕</span><small>Skins</small></button>
+      <button class="side-btn"><span>⬆️</span><small>Upgrade</small></button>
+      <button class="side-btn"><span>🛡️</span><small>Emblem</small></button>
+      <button class="side-btn"><span>😆</span><small>Emote</small></button>
+      <button class="side-btn"><span>🎨</span><small>Spray</small></button>
+      <button class="side-btn"><span>🏷️</span><small>Name</small></button>
+    </aside>
+
+    <main class="content">
+      <nav class="tabs">
+        <button class="tab" data-tab="premium">Premium Skins</button>
+        <button class="tab" data-tab="rare">Rare Skins</button>
+        <button class="tab active" data-tab="hero">Hero Shop</button>
+      </nav>
+
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="🔍  Cari nama hero…" />
+        <select id="role-filter">
+          <option value="">Semua Role</option>
+          <option>ASSASSIN</option>
+          <option>FIGHTER</option>
+          <option>MAGE</option>
+          <option>MARKSMAN</option>
+          <option>SUPPORT</option>
+          <option>TANK</option>
+        </select>
+        <select id="rarity-filter" hidden>
+          <option value="">Semua Rarity</option>
+          <option>COMMON</option>
+          <option>DELUXE</option>
+          <option>EXCEPTIONAL</option>
+          <option>EXQUISITE</option>
+          <option>GRAND</option>
+          <option>SUPREME</option>
+        </select>
+        <div class="pager">
+          <button id="prev" title="Halaman sebelumnya">‹</button>
+          <span id="pageinfo">– / –</span>
+          <button id="next" title="Halaman berikutnya">›</button>
+        </div>
+      </div>
+
+      <section id="grid" class="grid" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <!-- Modal pembelian hero -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <h3 id="modal-title">Beli Hero</h3>
+      <img id="modal-img" alt="" />
+      <p id="modal-sub"></p>
+      <div class="pay-options">
+        <button id="pay-bp" class="pay gold">🪙 Bayar dengan BP</button>
+        <button id="pay-diamond" class="pay blue">💎 Bayar dengan Diamond</button>
+      </div>
+      <button id="modal-close" class="modal-close">Batal</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
