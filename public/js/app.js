@@ -315,6 +315,9 @@ document.getElementById("modal-close").addEventListener("click", () => (modal.hi
 modal.addEventListener("click", (e) => {
   if (e.target === modal) modal.hidden = true;
 });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !modal.hidden) modal.hidden = true;
+});
 
 /* Sidebar dekoratif */
 document.querySelectorAll(".side-btn").forEach((btn) => {
