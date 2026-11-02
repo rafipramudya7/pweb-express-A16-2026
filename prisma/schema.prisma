@@ -1,0 +1,96 @@
+// Skema database MLBB Shop — Kelompok A16 (bagian A: Lead Setup & Catalog Engineer)
+// 4 model: Hero, Skin, Player, PlayerHero + 4 enum: Role, Lane, Rarity, Currency
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ASSASSIN
+  FIGHTER
+  MAGE
+  MARKSMAN
+  SUPPORT
+  TANK
+}
+
+enum Lane {
+  EXP
+  GOLD
+  JUNGLE
+  MID
+  ROAM
+}
+
+enum Rarity {
+  COMMON
+  DELUXE
+  EXCEPTIONAL
+  EXQUISITE
+  GRAND
+  SUPREME
+}
+
+enum Currency {
+  BP
+  DIAMOND
+}
+
+model Hero {
+  id            Int     @id @default(autoincrement())
+  name          String  @unique
+  role          Role
+  lane          Lane
+  secondaryRole Role?
+  secondaryLane Lane?
+  releaseDate   String?
+  releaseYear   Int
+  priceBP       Int?
+  priceDiamond  Int?
+  note          String?
+  skins         Skin[]
+  players       PlayerHero[]
+}
+
+model Skin {
+  id           Int     @id @default(autoincrement())
+  name         String
+  heroId       Int
+  rarity       Rarity
+  series       String?
+  releaseDate  String?
+  releaseYear  Int
+  priceDiamond Int?
+  acquisition  String?
+  hero         Hero    @relation(fields: [heroId], references: [id], onDelete: Cascade)
+
+  @@index([heroId])
+  @@index([rarity])
+}
+
+model Player {
+  id       Int          @id @default(autoincrement())
+  nickname String       @unique
+  bp       Int          @default(10000)
+  diamond  Int          @default(0)
+  heroes   PlayerHero[]
+}
+
+model PlayerHero {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  heroId    Int
+  currency  Currency
+  pricePaid Int
+  createdAt DateTime @default(now())
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  hero      Hero     @relation(fields: [heroId], references: [id])
+
+  @@unique([playerId, heroId])
+  @@index([playerId])
+}
