@@ -52,6 +52,15 @@ Detail: [`pembagian_tugas_kelompok_a16.md`](./pembagian_tugas_kelompok_a16.md)
 
 ---
 
+## 🔌 Endpoint API
+
+### Format Respons Standar
+Semua endpoint mengembalikan respons konsisten dengan boolean `status`:
+- **Sukses:** `{"status": true, "message": "...", "data": ...}`
+- **Gagal:** `{"status": false, "message": "..."}`
+
+---
+
 ## 🔌 Endpoint (Bagian A)
 
 | Method | Endpoint | Keterangan |
@@ -73,7 +82,28 @@ Format respons standar:
 }
 ```
 
-Endpoint bagian B & C (`/api/players/*`, `/api/statistics`) menyusul pada integrasi —
+---
+
+### 🔵 Bagian B (Player Management & Economy Engine)
+
+| Method | Endpoint | Keterangan |
+|---|---|---|
+| GET | `/api/players` | Ambil semua player (digunakan untuk mengisi dropdown player di frontend) |
+| POST | `/api/players` | Buat player baru (default: 10.000 BP & 0 Diamond, 400 nama kosong, 409 duplikat) |
+| GET | `/api/players/:player_id` | Detail player beserta daftar hero yang sudah dimiliki |
+| PATCH | `/api/players/:player_id` | Update nickname player (400 invalid, 404 not found, 409 nickname dipakai) |
+| DELETE | `/api/players/:player_id` | Hapus player (secara cascade menghapus relasi `PlayerHero` miliknya) |
+| POST | `/api/players/:player_id/topup` | Top-up Diamond (`amount` harus integer > 0) |
+| POST | `/api/players/:player_id/matches` | Hadiah match BP (`result`: `"WIN"` = +300 BP, `"LOSE"` = +100 BP) |
+
+---
+
+### 🔴 Bagian C (Shop Engine & Analytics)
+
+*Endpoint Beli Hero (`POST /api/players/:player_id/heroes`) dan Statistik Toko (`GET /api/statistics`) menyusul pada tahap integrasi akhir Bagian C.*
+
+---
+
 lihat `postman/MLBB-Shop-Testcase.postman_collection.json` (28 testcase resmi).
 
 ---
@@ -106,5 +136,7 @@ Hero tanpa potret memakai fallback inisial. Dataset asli: folder `Mlbb Dataset/`
 
 ## 🧪 Pengujian
 
-Import `postman/MLBB-Shop-Testcase.postman_collection.json` ke Postman, jalankan `npx prisma db seed`
-terlebih dahulu, lalu eksekusi testcase **01 → 28 berurutan**.
+1. Import file `postman/MLBB-Shop-Testcase.postman_collection.json` ke Postman.
+2. Jalankan `npm run seed` untuk mereset database ke kondisi awal.
+3. Jalankan `npm run dev` untuk menyalakan server di `http://localhost:3000`.
+4. Eksekusi request testcase sesuai urutan (**01 → 28**) untuk memastikan seluruh flow lulus pengujian.
