@@ -6,6 +6,7 @@ import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
 import heroRoutes from "./routes/heroRoutes";
 import skinRoutes from "./routes/skinRoutes";
+import playerRoutes from "./routes/playerRoutes";
 import { fail, success } from "./utils/response";
 
 const app = express();
@@ -29,6 +30,8 @@ app.get("/health", async (_req, res) => {
 
 app.use("/api/heroes", heroRoutes);
 app.use("/api/skins", skinRoutes);
+app.use("/api/players", playerRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 

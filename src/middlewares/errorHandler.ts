@@ -9,7 +9,7 @@ export function errorHandler(
 ): void {
   if (err instanceof HttpError) {
     res.status(err.statusCode).json({
-      status: "error",
+      status: false,
       message: err.message,
       data: null,
     });
@@ -19,7 +19,7 @@ export function errorHandler(
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
       res.status(409).json({
-        status: "error",
+        status: false,
         message: "Data sudah ada (melanggar constraint unik)",
         data: null,
       });
@@ -27,7 +27,7 @@ export function errorHandler(
     }
     if (err.code === "P2025") {
       res.status(404).json({
-        status: "error",
+        status: false,
         message: "Data tidak ditemukan",
         data: null,
       });
@@ -37,7 +37,7 @@ export function errorHandler(
 
   console.error("[errorHandler]", err);
   res.status(500).json({
-    status: "error",
+    status: false,
     message: "Terjadi kesalahan internal pada server",
     data: null,
   });

@@ -78,6 +78,7 @@ model Player {
   nickname String       @unique
   bp       Int          @default(10000)
   diamond  Int          @default(0)
+  createdAt DateTime     @default(now())
   heroes   PlayerHero[]
 }
 

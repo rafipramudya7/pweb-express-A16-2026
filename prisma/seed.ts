@@ -1,6 +1,6 @@
 import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
+import fs from "fs";
+import path from "path";
 import { PrismaClient } from "../src/generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
@@ -34,14 +34,22 @@ interface SkinSeed {
   acquisition: string | null;
 }
 
+// Data 3 Player awal sesuai tabel penugasan
 const initialPlayers = [
-  { nickname: "ArekITS" }, // id 1
-  { nickname: "RoamersSenja" }, // id 2
-  { nickname: "MageSurabaya" }, // id 3
+  { id: 1, nickname: "ArekITS", bp: 1500, diamond: 75 },
+  { id: 2, nickname: "SangPushRank", bp: 13000, diamond: 2892 },
+  { id: 3, nickname: "MageSurabaya", bp: 10000, diamond: 0 },
 ];
 
-// Reset sequence Postgres agar id berikutnya melanjutkan data seed
-// (wajib: testcase 06 mengharapkan hero baru ber-id 134, testcase 12 player baru ber-id 4).
+// Data 4 PlayerHero awal sesuai tabel penugasan
+const initialPlayerHeroes = [
+  { playerId: 1, heroId: 18, currency: "BP" as never, pricePaid: 2000 },
+  { playerId: 1, heroId: 1, currency: "BP" as never, pricePaid: 10800 },
+  { playerId: 2, heroId: 84, currency: "DIAMOND" as never, pricePaid: 599 },
+  { playerId: 2, heroId: 56, currency: "BP" as never, pricePaid: 32000 },
+];
+
+// Reset sequence Postgres agar ID autoincrement berjalan normal
 async function resetSequence(table: string): Promise<void> {
   await prisma.$executeRawUnsafe(
     `SELECT setval(pg_get_serial_sequence('"${table}"', 'id'), (SELECT COALESCE(MAX("id"), 1) FROM "${table}"))`,
@@ -93,22 +101,28 @@ async function main(): Promise<void> {
     })),
   });
 
-  console.log(`⬇️  Menanam ${initialPlayers.length} player awal (10.000 BP, 0 Diamond)...`);
+  console.log(`⬇️  Menanam ${initialPlayers.length} player awal...`);
   await prisma.player.createMany({ data: initialPlayers });
+
+  console.log(`⬇️  Menanam ${initialPlayerHeroes.length} player hero awal...`);
+  await prisma.playerHero.createMany({ data: initialPlayerHeroes });
 
   console.log("🔁 Menyetel ulang sequence id...");
   await resetSequence("Hero");
   await resetSequence("Skin");
   await resetSequence("Player");
+  await resetSequence("PlayerHero");
 
   const totalHeroes = await prisma.hero.count();
   const totalSkins = await prisma.skin.count();
   const totalPlayers = await prisma.player.count();
+  const totalPlayerHeroes = await prisma.playerHero.count();
 
   console.log("✅ Seeder selesai!");
-  console.log(`   Hero   : ${totalHeroes} (harus 133)`);
-  console.log(`   Skin   : ${totalSkins} (harus 892)`);
-  console.log(`   Player : ${totalPlayers} (harus 3)`);
+  console.log(`   Hero        : ${totalHeroes} (harus 133)`);
+  console.log(`   Skin        : ${totalSkins} (harus 892)`);
+  console.log(`   Player      : ${totalPlayers} (harus 3)`);
+  console.log(`   PlayerHero  : ${totalPlayerHeroes} (harus 4)`);
 }
 
 main()
