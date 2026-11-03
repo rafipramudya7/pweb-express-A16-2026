@@ -1,23 +1,14 @@
-# Dependencies
 node_modules/
 
-# Build output
 dist/
 npm-debug.log*
 
-# Environment variables — JANGAN PERNAH di-commit (ceklist penugasan!)
 .env
 .env.local
 .env.*.local
-
-# Prisma generated client
 src/generated/
-
-# Agent tooling (OpenCode / Neon skills) — milik lokal, bukan kode project
 .agents/
 skills-lock.json
-
-# OS noise
 Thumbs.db
 .DS_Store
 .neon

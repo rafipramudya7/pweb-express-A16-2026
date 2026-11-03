@@ -7,10 +7,8 @@ import { parseId, parsePagination } from "../utils/parse";
 
 const VALID_RARITIES = Object.values(Rarity) as string[];
 
-// Select ringkas untuk relasi hero pada skin
 const heroBrief = { select: { id: true, name: true, role: true } };
 
-// GET /api/skins?page=&limit=&heroId=&rarity=
 export async function getSkins(req: Request, res: Response): Promise<void> {
   const { page, limit, skip, take } = parsePagination(req.query);
   const { heroId, rarity } = req.query as { heroId?: string; rarity?: string };
@@ -44,7 +42,6 @@ export async function getSkins(req: Request, res: Response): Promise<void> {
   });
 }
 
-// GET /api/skins/:skin_id
 export async function getSkinById(req: Request, res: Response): Promise<void> {
   const skinId = parseId(req.params.skin_id);
   if (skinId === null) {

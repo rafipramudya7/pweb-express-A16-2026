@@ -8,7 +8,6 @@ import { parseId, parsePagination } from "../utils/parse";
 const VALID_ROLES = Object.values(Role) as string[];
 const VALID_LANES = Object.values(Lane) as string[];
 
-// GET /api/heroes?page=&limit=&search=&role=
 export async function getHeroes(req: Request, res: Response): Promise<void> {
   const { page, limit, skip, take } = parsePagination(req.query);
   const { search, role } = req.query as { search?: string; role?: string };
@@ -38,7 +37,6 @@ export async function getHeroes(req: Request, res: Response): Promise<void> {
   });
 }
 
-// GET /api/heroes/:hero_id
 export async function getHeroById(req: Request, res: Response): Promise<void> {
   const heroId = parseId(req.params.hero_id);
   if (heroId === null) {
@@ -56,13 +54,10 @@ export async function getHeroById(req: Request, res: Response): Promise<void> {
 
   success(res, { message: "Berhasil mengambil detail hero", data: hero });
 }
-
-// POST /api/heroes
 export async function createHero(req: Request, res: Response): Promise<void> {
   const body = (req.body ?? {}) as Record<string, unknown>;
   const { name, role, lane, releaseYear, priceBP, priceDiamond, secondaryRole, secondaryLane, releaseDate, note } = body;
 
-  // 1) Validasi kelengkapan field wajib (testcase 08 -> 400)
   const problems: string[] = [];
 
   if (typeof name !== "string" || name.trim() === "") problems.push("name");
@@ -76,7 +71,6 @@ export async function createHero(req: Request, res: Response): Promise<void> {
     throw new HttpError(400, `Data tidak lengkap. Field wajib yang kurang: ${problems.join(", ")}`);
   }
 
-  // 2) Validasi tipe & nilai
   if (!VALID_ROLES.includes(String(role))) {
     throw new HttpError(400, `Role tidak valid. Pilihan: ${VALID_ROLES.join(", ")}`);
   }
@@ -101,7 +95,6 @@ export async function createHero(req: Request, res: Response): Promise<void> {
 
   const normalizedName = String(name).trim();
 
-  // 3) Validasi duplikasi nama (testcase 07 -> 409)
   const duplicate = await prisma.hero.findUnique({ where: { name: normalizedName } });
   if (duplicate) {
     throw new HttpError(409, `Hero dengan nama "${normalizedName}" sudah terdaftar`);
@@ -130,6 +123,4 @@ export async function createHero(req: Request, res: Response): Promise<void> {
 
   success(res, { status: 201, message: "Hero berhasil dibuat", data: hero });
 }
-
-// Ekspor tipe untuk penggunaan lain bila diperlukan
 export type { Hero };

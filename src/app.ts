@@ -13,10 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(logger);
 
-// Frontend statis (MLBB Store) — public/index.html
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// GET /health — cek server & koneksi database Neon
 app.get("/health", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -29,15 +27,8 @@ app.get("/health", async (_req, res) => {
   }
 });
 
-// Modul katalog (bagian A)
 app.use("/api/heroes", heroRoutes);
 app.use("/api/skins", skinRoutes);
-
-// Modul lain menyusul di sini:
-// app.use("/api/players", playerRoutes);   // bagian B
-// app.use("/api/statistics", ...);          // bagian C
-
-// 404 untuk endpoint tak dikenal, lalu error handler terpusat
 app.use(notFound);
 app.use(errorHandler);
 

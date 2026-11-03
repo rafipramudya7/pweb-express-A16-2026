@@ -4,10 +4,6 @@ import path from "node:path";
 import { PrismaClient } from "../src/generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
-// Seeder MLBB Shop — Kelompok A16
-// Sumber data : data/heroes.json & data/skins.json (konversi dari "Mlbb Dataset/*.csv")
-// Hasil       : 133 Hero, 892 Skin, 3 Player awal (10.000 BP, 0 Diamond)
-
 const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
@@ -38,7 +34,6 @@ interface SkinSeed {
   acquisition: string | null;
 }
 
-// 3 player awal. id 3 = MageSurabaya & nickname "ArekITS" dipakai testcase Postman.
 const initialPlayers = [
   { nickname: "ArekITS" }, // id 1
   { nickname: "RoamersSenja" }, // id 2

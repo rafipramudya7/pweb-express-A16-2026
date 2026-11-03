@@ -6,8 +6,6 @@ export interface Pagination {
   skip: number;
   take: number;
 }
-
-// Parsing query page & limit dengan nilai default yang aman.
 export function parsePagination(
   query: Record<string, unknown>,
   defaultLimit = 10,
@@ -22,8 +20,6 @@ export function parsePagination(
 
   return { page, limit, skip: (page - 1) * limit, take: limit };
 }
-
-// Parsing parameter :id dari URL. Mengembalikan null bila bukan integer positif.
 export function parseId(value: string): number | null {
   const id = Number(value);
   return Number.isInteger(id) && id > 0 ? id : null;

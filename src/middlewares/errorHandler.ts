@@ -1,9 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "../generated/prisma";
 import { HttpError } from "../utils/http-error";
-
-// Middleware penanganan error terpusat.
-// Urutan pengecekan: HttpError -> error Prisma yang dikenal -> 500 generik.
 export function errorHandler(
   err: unknown,
   req: Request,
