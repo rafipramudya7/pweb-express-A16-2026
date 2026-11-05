@@ -32,10 +32,9 @@ app.get("/health", async (_req, res) => {
 
 app.use("/api/heroes", heroRoutes);
 app.use("/api/skins", skinRoutes);
-app.use("/api/players", shopRoutes);
 app.use("/api/players", playerRoutes);
+app.use("/api/players", shopRoutes);
 app.use("/api/statistics", statisticRoutes);
-
 app.use(notFound);
 app.use(errorHandler);
 
