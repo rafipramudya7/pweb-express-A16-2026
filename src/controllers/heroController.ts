@@ -31,14 +31,14 @@ export async function getHeroes(req: Request, res: Response): Promise<void> {
   ]);
 
   success(res, {
-    message: `Berhasil mengambil ${heroes.length} hero`,
+    message: "Berhasil mengambil data hero",
     data: heroes,
-    metadata: { page, limit, totalItems, totalPages: Math.ceil(totalItems / limit) },
+    metadata: { currentPage: page, limit, totalItems, totalPages: Math.ceil(totalItems / limit) },
   });
 }
 
 export async function getHeroById(req: Request, res: Response): Promise<void> {
-  const heroId = parseId(req.params.hero_id);
+  const heroId = parseId(req.params.hero_id as string);
   if (heroId === null) {
     throw new HttpError(400, "Parameter hero_id harus berupa angka yang valid");
   }
@@ -64,8 +64,6 @@ export async function createHero(req: Request, res: Response): Promise<void> {
   if (role === undefined || role === null || role === "") problems.push("role");
   if (lane === undefined || lane === null || lane === "") problems.push("lane");
   if (releaseYear === undefined || releaseYear === null) problems.push("releaseYear");
-  if (priceBP === undefined || priceBP === null) problems.push("priceBP");
-  if (priceDiamond === undefined || priceDiamond === null) problems.push("priceDiamond");
 
   if (problems.length > 0) {
     throw new HttpError(400, `Data tidak lengkap. Field wajib yang kurang: ${problems.join(", ")}`);
@@ -86,10 +84,15 @@ export async function createHero(req: Request, res: Response): Promise<void> {
   if (!Number.isInteger(Number(releaseYear)) || Number(releaseYear) <= 0) {
     throw new HttpError(400, "releaseYear harus berupa bilangan bulat positif");
   }
-  if (!Number.isInteger(Number(priceBP)) || Number(priceBP) < 0) {
+
+  const hasPriceBP = priceBP !== undefined && priceBP !== null && priceBP !== "";
+  const hasPriceDiamond =
+    priceDiamond !== undefined && priceDiamond !== null && priceDiamond !== "";
+
+  if (hasPriceBP && (!Number.isInteger(Number(priceBP)) || Number(priceBP) < 0)) {
     throw new HttpError(400, "priceBP harus berupa bilangan bulat >= 0");
   }
-  if (!Number.isInteger(Number(priceDiamond)) || Number(priceDiamond) < 0) {
+  if (hasPriceDiamond && (!Number.isInteger(Number(priceDiamond)) || Number(priceDiamond) < 0)) {
     throw new HttpError(400, "priceDiamond harus berupa bilangan bulat >= 0");
   }
 
@@ -115,8 +118,8 @@ export async function createHero(req: Request, res: Response): Promise<void> {
           : null,
       releaseDate: typeof releaseDate === "string" && releaseDate !== "" ? releaseDate : null,
       releaseYear: Number(releaseYear),
-      priceBP: Number(priceBP),
-      priceDiamond: Number(priceDiamond),
+      priceBP: hasPriceBP ? Number(priceBP) : null,
+      priceDiamond: hasPriceDiamond ? Number(priceDiamond) : null,
       note: typeof note === "string" && note !== "" ? note : null,
     },
   });

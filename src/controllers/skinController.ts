@@ -36,14 +36,14 @@ export async function getSkins(req: Request, res: Response): Promise<void> {
   ]);
 
   success(res, {
-    message: `Berhasil mengambil ${skins.length} skin`,
+    message: "Berhasil mengambil data skin",
     data: skins,
-    metadata: { page, limit, totalItems, totalPages: Math.ceil(totalItems / limit) },
+    metadata: { currentPage: page, limit, totalItems, totalPages: Math.ceil(totalItems / limit) },
   });
 }
 
 export async function getSkinById(req: Request, res: Response): Promise<void> {
-  const skinId = parseId(req.params.skin_id);
+  const skinId = parseId(req.params.skin_id as string);
   if (skinId === null) {
     throw new HttpError(400, "Parameter skin_id harus berupa angka yang valid");
   }

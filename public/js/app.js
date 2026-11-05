@@ -96,9 +96,10 @@ async function loadHeroes() {
 
   const json = await api(`/api/heroes?${params}`);
   const meta = json.metadata || {};
-  pageinfo.textContent = `${meta.page ?? state.page} / ${meta.totalPages ?? 1}`;
-  prevBtn.disabled = (meta.page ?? 1) <= 1;
-  nextBtn.disabled = (meta.page ?? 1) >= (meta.totalPages ?? 1);
+  const currentPage = meta.currentPage ?? meta.page ?? state.page;
+  pageinfo.textContent = `${currentPage} / ${meta.totalPages ?? 1}`;
+  prevBtn.disabled = currentPage <= 1;
+  nextBtn.disabled = currentPage >= (meta.totalPages ?? 1);
 
   if (!json.data.length) {
     grid.innerHTML = `<div class="empty">Tidak ada hero yang cocok 🥲</div>`;
@@ -134,9 +135,10 @@ async function loadSkins() {
 
   const json = await api(`/api/skins?${params}`);
   const meta = json.metadata || {};
-  pageinfo.textContent = `${meta.page ?? state.page} / ${meta.totalPages ?? 1}`;
-  prevBtn.disabled = (meta.page ?? 1) <= 1;
-  nextBtn.disabled = (meta.page ?? 1) >= (meta.totalPages ?? 1);
+  const currentPage = meta.currentPage ?? meta.page ?? state.page;
+  pageinfo.textContent = `${currentPage} / ${meta.totalPages ?? 1}`;
+  prevBtn.disabled = currentPage <= 1;
+  nextBtn.disabled = currentPage >= (meta.totalPages ?? 1);
 
   if (!json.data.length) {
     grid.innerHTML = `<div class="empty">Tidak ada skin yang cocok 🥲</div>`;

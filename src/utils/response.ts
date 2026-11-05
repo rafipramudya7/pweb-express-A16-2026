@@ -1,11 +1,11 @@
 import { Response } from "express";
 
 // Format JSON standar seluruh endpoint:
-//   sukses : { status: "success", message, data, metadata? }
-//   gagal  : { status: "error", message, data: null }
+//   sukses : { status: true, message, data, metadata? }
+//   gagal  : { status: false, message }
 
 export interface Metadata {
-  page?: number;
+  currentPage?: number;
   limit?: number;
   totalItems?: number;
   totalPages?: number;
@@ -22,16 +22,13 @@ export function success(
   },
 ): Response {
   const { status = 200, message, data = null, metadata } = options;
-  const body: Record<string, unknown> = { status: "success", message, data };
+  // Disesuaikan menjadi boolean true sesuai spesifikasi PDF halaman 7
+  const body: Record<string, unknown> = { status: true, message, data };
   if (metadata) body.metadata = metadata;
   return res.status(status).json(body);
 }
 
-export function fail(
-  res: Response,
-  statusCode: number,
-  message: string,
-  data: unknown = null,
-): Response {
-  return res.status(statusCode).json({ status: "error", message, data });
+export function fail(res: Response, statusCode: number, message: string): Response {
+  // Disesuaikan menjadi boolean false sesuai spesifikasi PDF halaman 7
+  return res.status(statusCode).json({ status: false, message });
 }

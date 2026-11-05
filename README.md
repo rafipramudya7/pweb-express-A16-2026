@@ -52,6 +52,15 @@ Detail: [`pembagian_tugas_kelompok_a16.md`](./pembagian_tugas_kelompok_a16.md)
 
 ---
 
+## 🔌 Endpoint API
+
+### Format Respons Standar
+Semua endpoint mengembalikan respons konsisten dengan boolean `status`:
+- **Sukses:** `{"status": true, "message": "...", "data": ...}`
+- **Gagal:** `{"status": false, "message": "..."}`
+
+---
+
 ## 🔌 Endpoint (Bagian A)
 
 | Method | Endpoint | Keterangan |
@@ -69,11 +78,76 @@ Format respons standar:
   "status": "success",
   "message": "Berhasil mengambil 5 hero",
   "data": [],
-  "metadata": { "page": 1, "limit": 5, "totalItems": 133, "totalPages": 27 }
+  "metadata": { "currentPage": 1, "limit": 5, "totalItems": 133, "totalPages": 27 }
 }
 ```
 
-Endpoint bagian B & C (`/api/players/*`, `/api/statistics`) menyusul pada integrasi —
+---
+
+### 🔵 Bagian B (Player Management & Economy Engine)
+
+| Method | Endpoint | Keterangan |
+|---|---|---|
+| GET | `/api/players` | Ambil semua player (digunakan untuk mengisi dropdown player di frontend) |
+| POST | `/api/players` | Buat player baru (default: 10.000 BP & 0 Diamond, 400 nama kosong, 409 duplikat) |
+| GET | `/api/players/:player_id` | Detail player beserta daftar hero yang sudah dimiliki |
+| PATCH | `/api/players/:player_id` | Update nickname player (400 invalid, 404 not found, 409 nickname dipakai) |
+| DELETE | `/api/players/:player_id` | Hapus player (secara cascade menghapus relasi `PlayerHero` miliknya) |
+| POST | `/api/players/:player_id/topup` | Top-up Diamond (`amount` harus integer > 0) |
+| POST | `/api/players/:player_id/matches` | Hadiah match BP (`result`: `"WIN"` = +300 BP, `"LOSE"` = +100 BP) |
+
+---
+
+### 🔴 Bagian C (Shop Engine & Analytics)
+
+| Method | Endpoint | Keterangan |
+|---|---|---|
+| POST | `/api/players/:player_id/heroes` | Beli hero dengan `BP` atau `DIAMOND` (validasi berurutan: 400/404/409, lalu transaksi atomik) |
+| GET | `/api/statistics` | Statistik toko: total player, total hero dimiliki, total diamond, hero paling banyak dimiliki, dan jumlah hero per role |
+
+Contoh body beli hero:
+```json
+{ "heroId": 22, "currency": "DIAMOND" }
+```
+
+Contoh respons sukses `201`:
+```json
+{
+  "status": true,
+  "message": "Hero berhasil dibeli",
+  "data": {
+    "hero": { "id": 22, "name": "Freya" },
+    "currency": "DIAMOND",
+    "pricePaid": 599,
+    "balance": { "bp": 10300, "diamond": 107 }
+  }
+}
+```
+
+Contoh respons `GET /api/statistics`:
+```json
+{
+  "status": true,
+  "message": "Berhasil mengambil statistik",
+  "data": {
+    "totalPlayers": 5,
+    "totalHeroesOwned": 5,
+    "totalDiamond": 3780,
+    "mostOwnedHero": { "heroId": 1, "name": "Miya", "owners": 1 },
+    "heroesPerRole": [
+      { "role": "FIGHTER", "total": 37 },
+      { "role": "MAGE", "total": 26 },
+      { "role": "ASSASSIN", "total": 20 },
+      { "role": "MARKSMAN", "total": 20 },
+      { "role": "TANK", "total": 18 },
+      { "role": "SUPPORT", "total": 13 }
+    ]
+  }
+}
+```
+
+---
+
 lihat `postman/MLBB-Shop-Testcase.postman_collection.json` (28 testcase resmi).
 
 ---
@@ -106,5 +180,7 @@ Hero tanpa potret memakai fallback inisial. Dataset asli: folder `Mlbb Dataset/`
 
 ## 🧪 Pengujian
 
-Import `postman/MLBB-Shop-Testcase.postman_collection.json` ke Postman, jalankan `npx prisma db seed`
-terlebih dahulu, lalu eksekusi testcase **01 → 28 berurutan**.
+1. Import file `postman/MLBB-Shop-Testcase.postman_collection.json` ke Postman.
+2. Jalankan `npm run seed` untuk mereset database ke kondisi awal.
+3. Jalankan `npm run dev` untuk menyalakan server di `http://localhost:3000`.
+4. Eksekusi request testcase sesuai urutan (**01 → 28**) untuk memastikan seluruh flow lulus pengujian.

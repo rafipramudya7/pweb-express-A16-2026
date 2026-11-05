@@ -137,11 +137,11 @@ heroController.ts →
 config/db.ts → adapter Neon mengirim query itu ke database PostgreSQL di Neon (cloud)
       ▼
 response.ts → dibungkus format baku:
-      { "status": "success", "message": "Berhasil mengambil 10 hero",
-        "data": [...], "metadata": { "page": 1, "limit": 10, "totalItems": 12, "totalPages": 2 } }
+      { "status": true, "message": "Berhasil mengambil data hero",
+        "data": [...], "metadata": { "currentPage": 1, "limit": 10, "totalItems": 12, "totalPages": 2 } }
       ▼
 errorHandler.ts → kalau di tengah jalan ada error, di sini ditangkap & diubah jadi
-      { "status": "error", "message": "...", "data": null } dengan status code yang tepat
+      { "status": false, "message": "..." } dengan status code yang tepat
 ```
 
 ### Analogi sederhana 🏢

@@ -1,14 +1,23 @@
+# Dependencies
 node_modules/
 
+# Production & Build Output
 dist/
 npm-debug.log*
 
+# Environment Variables & Secrets
 .env
 .env.local
 .env.*.local
+
+# Generated Code (Prisma 7)
 src/generated/
+
+# Tooling & Configs
 .agents/
 skills-lock.json
+.neon
+
+# OS & System Files
 Thumbs.db
 .DS_Store
-.neon
